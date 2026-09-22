@@ -1,7 +1,6 @@
 import type { Product } from "./product";
 import type { CartLine } from "./cartLine";
-import type { Cart } from "./cart";
-
+import type { CheckoutPayload } from "./cart";
 
 const coca: Product = {
     reference: "P001",
@@ -9,6 +8,7 @@ const coca: Product = {
     price: 2.50,
     category: "DRINKS"
 };
+
 const pizza: Product = {
     reference: "P002",
     label: "Pizza",
@@ -20,55 +20,33 @@ const cocaLine: CartLine = {
     product: coca,
     quantity: 2
 };
+
 const pizzaLine: CartLine = {
     product: pizza,
     quantity: 1
 };
 
-const cart: Cart = {
-    lines: [cocaLine]
-};
-const cart2: Cart = {
-    lines: [pizzaLine]
-};
-
-const cart3: Cart = {
+const cart3 = {
     lines: [cocaLine, pizzaLine]
 };
 
-function calculateTotal(cart: Cart): number {
-    let total = 0;
+const payload: CheckoutPayload = {
+    cart: cart3,
+    fidelityPoints: 500
+};
 
-    for (const line of cart.lines) {
-        total += line.product.price * line.quantity;
-    }
+async function checkout(payload: CheckoutPayload): Promise<void> {
+    const response = await fetch("http://localhost:8080/checkout", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+    });
 
-    return total;
+    const result = await response.json();
+
+    console.log(result);
 }
 
-console.log(calculateTotal(cart));
-
-
-function displayReceipt(cart: Cart): void {
-    console.log(" _________ RECEIPT ___________ ");
-    for ( const line of cart.lines){
-        const lineTotal = line.product.price * line.quantity
-
-        console.log(
-           line.product.label +
-           " x" +
-           line.quantity +
-           " : " +
-           lineTotal +
-           " €"
-
-        );
-    }
-
-
-    console.log("TOTAL :" + calculateTotal(cart) +" €");
-    console.log("-----------------------");
-}
-displayReceipt(cart);
-displayReceipt(cart2);
-displayReceipt(cart3);
+checkout(payload);
