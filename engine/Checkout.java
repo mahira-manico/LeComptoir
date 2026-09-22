@@ -3,9 +3,10 @@ public class Checkout {
 
     //calcul method (add of v2 with discount of 10% and free drink discount)
     public double calculateTotal(Cart cart){
-       double pastTotal= cart.subTotal();
-       double discount=0.0;
-       double drinkDiscount=calculateFreeDrink(cart);
+        double pastTotal= cart.subTotal();
+        double discount=0.0;
+        double drinkDiscount=calculateFreeDrink(cart);
+        double tvaPrice=getTVA(cart);
 
        if (pastTotal>50.0){
            discount=pastTotal*0.10;
@@ -13,6 +14,22 @@ public class Checkout {
 
        double total=pastTotal-discount-drinkDiscount;
        return total;
+    }
+
+    //V4 IMPLEMENTATION
+    public double getTVA(Cart cart){
+        double totalTVA=0.0;
+
+        for(CartLine cartLine: cart.getCartLines()){
+            double totalQT=cartLine.product().price()* cartLine.quantity();
+
+            if(cartLine.product().category()==Category.FOOD){
+                totalTVA+=totalQT*0.055;
+            } else {
+                totalTVA+=totalQT*0.20;
+            }
+        }
+        return totalTVA;
     }
 
     //add of free drink method
@@ -39,10 +56,21 @@ public class Checkout {
 
     public void receipt(Cart cart){
         System.out.println("--Receipt--");
+        double tva55=0.0;
+        double tva20=0.0;
+
         for(CartLine cartLine:cart.getCartLines()){
             System.out.println(
                     cartLine.quantity()+" x "+cartLine.product().label()+"("+cartLine.product().price()+"$)"+" Total price :"+cartLine.total()+"$"
-            );}
+            );
+
+            double totalQT=cartLine.product().price()* cartLine.quantity();
+            if(cartLine.product().category()==Category.FOOD){
+                tva55+=totalQT*0.055;
+            } else {
+                tva20+=totalQT*0.20;
+            }
+        }
 
         System.out.println("------------------");
         double freeDrink=calculateFreeDrink(cart);
@@ -50,9 +78,12 @@ public class Checkout {
             System.out.println("Congrats! you got : Discount Drink(the lowest for free!) -"+freeDrink+"$");
         }
         if(cart.subTotal()>50.0){
-            System.out.println("Congrats! you got : Discount -10% -"+(cart.subTotal()*0.10)+"$");
+            System.out.println("Congrats! you got : Discount -10% "+"(-"+(cart.subTotal()*0.10)+")"+"$");
         }
-        System.out.println("TOTAL:"+calculateTotal(cart)+"$");
+        System.out.println("HT Price : "+calculateTotal(cart)+"$");
+        System.out.println("TVA(5,5%) : "+tva55+"$");
+        System.out.println("TVA(20%) : "+tva20+"$");
+        System.out.println("TOTAL(TTC Price) : "+(calculateTotal(cart)+getTVA(cart))+"$");
         System.out.println("------------------");
     }
 }

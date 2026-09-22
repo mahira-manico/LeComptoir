@@ -6,9 +6,9 @@ public class main {
 
         //test script and instanciation
         Product coca = new Product("fff", "Coca", 20, Category.DRINKS);
-        CartLine line = new CartLine(coca, 8);
+        CartLine line = new CartLine(coca, 1);
         Product pain=new Product("ggg","pain",5.2,Category.FOOD);
-        CartLine line2=new CartLine(pain, 4);
+        CartLine line2=new CartLine(pain, 10);
         List<CartLine>cart=new ArrayList<>();
         cart.add(line);
         cart.add(line2);
