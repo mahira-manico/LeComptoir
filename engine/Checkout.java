@@ -1,2 +1,4 @@
-//record for checkout with the full cart
-public record Checkout(Cart cart) {}
+//Class for checkout with the full cart
+public class Checkout {
+
+}
