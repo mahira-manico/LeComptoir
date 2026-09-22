@@ -1,9 +1,16 @@
 //Class for checkout with the full cart
 public class Checkout {
 
-    //calcul method
+    //calcul method (add of v2 with discount of 10%)
     public double calculateTotal(Cart cart){
-        return cart.subTotal();
+       double pastTotal= cart.subTotal();
+       double discount=0.0;
+
+       if (pastTotal>50.0){
+           discount=pastTotal*0.10;
+       }
+       double total=pastTotal-discount;
+       return total;
     }
 
     public void receipt(Cart cart){
@@ -14,7 +21,7 @@ public class Checkout {
             );}
 
         System.out.println("------------------");
-        System.out.println("TOTAL:"+cart.subTotal()+"$");
+        System.out.println("TOTAL:"+calculateTotal(cart)+"$");
         System.out.println("------------------");
     }
 }
