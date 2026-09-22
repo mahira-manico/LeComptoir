@@ -1,7 +1,7 @@
 //Class for checkout with the full cart
 public class Checkout {
 
-    //calcul method (add of v3 with discount of 10%)
+    //calcul method (add of v2 with discount of 10% and free drink discount)
     public double calculateTotal(Cart cart){
        double pastTotal= cart.subTotal();
        double discount=0.0;
@@ -53,7 +53,6 @@ public class Checkout {
             System.out.println("Congrats! you got : Discount -10% -"+(cart.subTotal()*0.10)+"$");
         }
         System.out.println("TOTAL:"+calculateTotal(cart)+"$");
-
         System.out.println("------------------");
     }
 }
