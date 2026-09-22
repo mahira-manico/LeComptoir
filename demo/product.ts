@@ -1,5 +1,5 @@
 import type { Category } from "./category"
-interface Product {
+export interface Product {
     reference : string ; 
     label : string ;
     price: number ;
