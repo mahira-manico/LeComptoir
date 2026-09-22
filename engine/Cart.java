@@ -27,7 +27,7 @@ public class Cart{
         this.cartLines.add(line);
     }
 
-    //get the sub total of the full list
+    //get the sub-total of the full list
     public double subTotal(){
         double totalCart=0.0;
 
