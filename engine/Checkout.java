@@ -2,45 +2,6 @@
 public class Checkout {
 
 
-    //discount for fidelity points
-    public double discountFidelity(Cart cart, int fidelityPoints){
-       double discount=(fidelityPoints/100)*5.0;
-        if(discount>cart.subTotal()){
-            discount=cart.subTotal();
-        }
-        return discount;
-    }
-
-    //discount for -10%
-    public double discountTen(Cart cart){
-        if(cart.subTotal()>50.0){
-            return cart.subTotal()*0.10;
-        }
-        return 0.0;
-    }
-
-    //add of free drink method
-    public double discountFreeDrink(Cart cart) {
-        int totalDrink = 0; //counter of drink
-        for (CartLine cartLine : cart.getCartLines()) { //loop of cart lines
-            if (cartLine.product().category() == Category.DRINKS) { //check for drink category of each product
-                totalDrink += cartLine.quantity(); //add to counter
-            }
-        }
-        if (totalDrink >= 3) {
-            double minPrice = Double.MAX_VALUE; //take max value to compare
-            for (CartLine cartLine : cart.getCartLines()) {
-                if (cartLine.product().category() == Category.DRINKS) {
-                    if (cartLine.product().price() < minPrice) { //compare price to max value for each loop
-                        minPrice = cartLine.product().price(); //change value of minPrice to price of the product if the price is lower than minPrice
-                    }
-                }
-            }
-            return minPrice; //return the lowest price
-        }
-        return 0.0;
-    }
-
     //method to decide which discount is the best
     public double getBestDiscount(Cart cart, int fidelityPoints){
         double discountFidelity=discountFidelity(cart, fidelityPoints);
@@ -63,6 +24,8 @@ public class Checkout {
             }
         }
         return TVAFood;
+
+
     }
 
     //method to get the tva for drink and others
