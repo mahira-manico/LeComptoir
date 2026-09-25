@@ -2,10 +2,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+//under class of interface DiscountStrategy
 public class FreeDrinksDiscount implements DiscountStrategy {
     @Override
     public String getName() {
-        return "1 Boisson offerte";
+        return "Boissons offertes";
     }
 
     @Override
@@ -13,7 +14,7 @@ public class FreeDrinksDiscount implements DiscountStrategy {
         //initialize a list to contains the price of each drinks
         List<Double> drinkPrices = new ArrayList<>();
 
-        for (CartLine cartLine: cart.getCartLines()) { //Loop on lines in cartLines
+        for (CartLine cartLine: cart.cartLines()) { //Loop on lines in cartLines
             if (cartLine.product().category() == Category.DRINKS) {  //Filter by category DRINK
                 for (int i = 0; i < cartLine.quantity(); i++) { //Loop on each quantity of a product
                     drinkPrices.add(cartLine.product().price()); //take each prices

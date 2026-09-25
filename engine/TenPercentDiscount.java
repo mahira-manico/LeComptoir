@@ -1,3 +1,4 @@
+//under class of DiscountStrategy interface
 public class TenPercentDiscount implements DiscountStrategy {
 
     @Override
