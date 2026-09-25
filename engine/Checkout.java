@@ -1,125 +1,82 @@
-//Class for checkout with the full cart
+import java.util.List;
+
+//Class for checkout, handle all calculs
 public class Checkout {
 
+    private final List<DiscountStrategy> strategies; //take the list of discount strategies
 
-    //discount for fidelity points
-    public double discountFidelity(Cart cart, int fidelityPoints){
-       double discount=(fidelityPoints/100)*5.0;
-        if(discount>cart.subTotal()){
-            discount=cart.subTotal();
-        }
-        return discount;
-    }
-
-    //discount for -10%
-    public double discountTen(Cart cart){
-        if(cart.subTotal()>50.0){
-            return cart.subTotal()*0.10;
-        }
-        return 0.0;
-    }
-
-    //add of free drink method
-    public double discountFreeDrink(Cart cart) {
-        int totalDrink = 0; //counter of drink
-        for (CartLine cartLine : cart.getCartLines()) { //loop of cart lines
-            if (cartLine.product().category() == Category.DRINKS) { //check for drink category of each product
-                totalDrink += cartLine.quantity(); //add to counter
-            }
-        }
-        if (totalDrink >= 3) {
-            double minPrice = Double.MAX_VALUE; //take max value to compare
-            for (CartLine cartLine : cart.getCartLines()) {
-                if (cartLine.product().category() == Category.DRINKS) {
-                    if (cartLine.product().price() < minPrice) { //compare price to max value for each loop
-                        minPrice = cartLine.product().price(); //change value of minPrice to price of the product if the price is lower than minPrice
-                    }
-                }
-            }
-            return minPrice; //return the lowest price
-        }
-        return 0.0;
+    public Checkout() {
+        this.strategies = List.of(
+                new TenPercentDiscount(), //Instanciation of each under class of interfaces DiscountStrategy
+                new FreeDrinksDiscount(),
+                new FidelityDiscount()
+        );
     }
 
     //method to decide which discount is the best
-    public double getBestDiscount(Cart cart, int fidelityPoints){
-        double discountFidelity=discountFidelity(cart, fidelityPoints);
-        double discountTen=discountTen(cart);
-        double discountFreeDrink=discountFreeDrink(cart);
-        return Math.max(discountFidelity,Math.max(discountTen,discountFreeDrink));
+    public DiscountStrategy getBestDiscount(Cart cart, Fidelity fidelity){
+        DiscountStrategy bestDiscount=null;
+        double max=0.0;
 
-
-    }
-
-    //method to get the tva of food
-    public double getTVAFood(Cart cart){
-        double TVAFood=0.0;
-
-        for(CartLine cartLine: cart.getCartLines()){
-            double totalQT=cartLine.product().price()* cartLine.quantity();
-
-            if(cartLine.product().category()==Category.FOOD){ //check category food only
-                TVAFood+=totalQT*0.055; //tva at 5.5%
+        for (DiscountStrategy strategy : strategies) {
+            double amount=strategy.getDiscount(cart,fidelity);
+            if(amount>max){
+                max=amount;
+                bestDiscount=strategy;
             }
         }
-        return TVAFood;
+        return bestDiscount; //return body
     }
 
-    //method to get the tva for drink and others
-    public double getTVAOther(Cart cart){
-        double TVAOther =0.0;
-
-        for(CartLine cartLine: cart.getCartLines()){
-            double totalQT=cartLine.product().price()* cartLine.quantity();
-
-            if(cartLine.product().category()==Category.OTHERS || cartLine.product().category()==Category.DRINKS){ //check category others and drinks
-                TVAOther +=totalQT*0.20; //tva at 20%
-            }
-        }
-        return TVAOther;
+    public double totalHT(Cart cart, Fidelity fidelity){ //get the total ht, price after discounts
+        DiscountStrategy bestDiscount=getBestDiscount(cart, fidelity);
+        double amount=(bestDiscount!=null)?bestDiscount.getDiscount(cart,fidelity) : 0.0;
+        return Math.max(0.0,cart.subTotal()-amount);
     }
 
-    //method to display receipt
-    public void receipt(Cart cart, Fidelity fidelity){
-        System.out.println("--Receipt--");
+    public double totalTTC(Cart cart, Fidelity fidelity){ //get the ttc price, use price ht and vat total
+        return totalHT(cart,fidelity)+getVAT(cart,fidelity);
+    }
 
-        for(CartLine cartLine:cart.getCartLines()){
-            System.out.println(
-                    cartLine.quantity()+" x "+cartLine.product().label()+"("+cartLine.product().price()+"$)"+" Total price :"+cartLine.total()+"$"
-            );
-        }
+    public double getVAT(Cart cart, Fidelity fidelity){ //get the vat
+        double ht=totalHT(cart, fidelity);
+        double totalRaw=cart.subTotal();
+        double discountFactor=(totalRaw>0.0)?(ht/totalRaw) :1.0; //check if the full price is not negative, if not it does a division
 
-        System.out.println("------------------");
+        double vat055=0.0;
+        double vat20=0.0;
 
-        double bestDiscount=getBestDiscount(cart, fidelity.getPoints());
-
-        if (bestDiscount > 0.0) { //display best discount message depending on the best discount result
-            if (bestDiscount == discountTen(cart)) {
-                System.out.println("Congrats! you got -10% discount(for >50$) : -" + bestDiscount + "$");
-            } else if (bestDiscount == discountFreeDrink(cart)) {
-                System.out.println("Congrats! you got a free drink(for >=3 drink bought) : -" + bestDiscount + "$");
-            } else if (bestDiscount == discountFidelity(cart, fidelity.getPoints())) {
-                int pointsUsed= ((int) bestDiscount / 5) * 100;
-                fidelity.spendPoints(pointsUsed);
-                System.out.println("Congrats! your fidelity got you : -" + bestDiscount + "$");
+        for(CartLine lines:cart.cartLines()){
+            double lineNet=lines.total()*discountFactor;
+            double lineVAT=lineNet*lines.product().category().getVat();
+            if(lines.product().category().getVat()==0.055){
+                vat055+=lineVAT;
+            }else {
+                vat20+=lineVAT;
             }
-        } else {
-            System.out.println("No discount this time :(");
         }
+        return  vat055+vat20;
+    }
 
-        //calcul of all total prices and tva
-        double totalHT = cart.subTotal() - bestDiscount;
-        double totalTVA = getTVAFood(cart)+getTVAOther(cart);
-        double totalTTC = totalHT + totalTVA;
-        int wonFidelity = (int) totalHT;
-        fidelity.addPoints(wonFidelity);
+    public void updateCard(Cart cart,Fidelity fidelity){ //update fidelity class after each checkout
+      DiscountStrategy bestDiscount=getBestDiscount(cart,fidelity);
+      double discountAmount=(bestDiscount!=null)?bestDiscount.getDiscount(cart,fidelity) : 0.0; //check if there is a discount
+      double totalTTC=totalTTC(cart,fidelity);
 
-        System.out.println("HT Price : "+totalHT+"$");
-        System.out.println("TVA(5,5%) : "+getTVAFood(cart)+"$");
-        System.out.println("TVA(20%) : "+getTVAOther(cart)+"$");
-        System.out.println("TOTAL(TTC Price) : "+totalTTC+"$");
-        System.out.println("Won fidelity points : "+wonFidelity+" points.");
-        System.out.println("Total fidelity points : "+fidelity.getPoints()+" points.");
-        System.out.println("------------------");
+      if(fidelity!=null){
+          if(bestDiscount instanceof FidelityDiscount&&discountAmount>0.0){
+              int usedPoints= (int) (discountAmount/5.0);
+              int pointsToDeducts=usedPoints*100;
+              fidelity.usePoints(pointsToDeducts);
+          }
+          int wonPoints= (int) totalTTC;
+          fidelity.addPoints(wonPoints);
+      }
     }
 }
+
+
+
+
+
+

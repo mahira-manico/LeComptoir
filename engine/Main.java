@@ -4,31 +4,43 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) {
 
-        //test script and instanciation
-        Product Coca = new Product("fff", "Coca", 1.50, Category.DRINKS);
-        CartLine line = new CartLine(Coca, 1);
-        Product Bread =new Product("ggg","Bread",2.10,Category.FOOD);
-        CartLine line2=new CartLine(Bread, 5);
-        List<CartLine>cart=new ArrayList<>();
-        cart.add(line);
-        cart.add(line2);
-        Cart totalCart=new Cart(cart);
+        //Client test script
+        Cart cart=new Cart();
+        cart.addLine(new CartLine(new Product("DRINK-SODA1","COCA",3.50,Category.DRINKS),3));
+        cart.addLine(new CartLine(new Product("DRINK-SODA2","PEPSI",2.50,Category.DRINKS),3));
+        cart.addLine(new CartLine(new Product("FOOD-FASTFOOD","PANINI",2.30,Category.FOOD),4));
+
+        //Initialize data
+        Fidelity fidelity=new Fidelity(0);
         Checkout checkout=new Checkout();
-        Fidelity fidelityPoints=new Fidelity(0);
+        ReceiptBuilder receiptBuilder=new TextReceiptBuilder();
+        ReceiptDirector receiptDirector=new ReceiptDirector(receiptBuilder);
+        receiptDirector.makeReceipt(cart,fidelity,checkout);
+        String receipt= receiptBuilder.getResult();
+        System.out.println(receipt);
+        checkout.updateCard(cart,fidelity);
 
-        //display the receipt
-        checkout.receipt(totalCart, fidelityPoints);
+        //check if fidelity points get add and if free drink discount works
+        Cart cart2 = new Cart();
+        cart2.addLine(new CartLine(new Product("DRINK-SODA3", "FANTA", 1.50,Category.DRINKS), 4));
+        receiptDirector.makeReceipt(cart2, fidelity, checkout);
+        System.out.println(receiptBuilder.getResult());
+        checkout.updateCard(cart2,fidelity);
 
-        //check add of fidelity points
-        Product pepsi = new Product("jjj", "Pepsi", 3.50, Category.DRINKS);
-        CartLine line3 = new CartLine(pepsi, 3);
-        Product noodles=new Product("pop","Noodles",5.10,Category.FOOD);
-        CartLine line4 =new CartLine(noodles, 5);
-        cart.add(line3);
-        cart.add(line4);
-        Cart totalCart2=new Cart(cart);
-        Checkout checkout2=new Checkout();
-        checkout2.receipt(totalCart2,fidelityPoints);
+        //Check if -10% reduction is used
+        Cart cart3=new Cart();
+        cart3.addLine(new CartLine(new Product("PASTA","PANZANI",4.50,Category.FOOD),5));
+        cart3.addLine(new CartLine(new Product("TECH","PS5",649,Category.OTHERS),1));
+        receiptDirector.makeReceipt(cart3,fidelity,checkout);
+        System.out.println(receiptBuilder.getResult());
+        checkout.updateCard(cart3,fidelity);
+
+        //check if fidelity points are used and get deducted
+        Cart cart4=new Cart();
+        cart4.addLine(new CartLine(new Product("PASTA","FARFALLE",4.50,Category.FOOD),3));
+        receiptDirector.makeReceipt(cart4,fidelity,checkout);
+        System.out.println(receiptBuilder.getResult());
+        checkout.updateCard(cart4,fidelity);
 
 
 

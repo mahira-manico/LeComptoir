@@ -7,15 +7,16 @@ public class Fidelity {
         this.points = points;
     }
 
+    //methods to manipulate the class
     public int getPoints() {
-        return this.points;
+        return points;
     }
 
-    public void addPoints(int earned) {
-        this.points += earned;
+    public void addPoints(int points) {
+        this.points+= points;
     }
 
-    public void spendPoints(int spent) {
-        this.points -= spent;
+    public void usePoints(int usedPoints){
+        this.points-=usedPoints;
     }
 }
