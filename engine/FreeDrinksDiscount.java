@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class FreeDrinksDiscount implements DiscountStrategy{
+public class FreeDrinksDiscount implements DiscountStrategy {
     @Override
     public String getName() {
         return "1 Boisson offerte";

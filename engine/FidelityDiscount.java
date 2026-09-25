@@ -1,4 +1,4 @@
-public class FidelityDiscount implements DiscountStrategy{
+public class FidelityDiscount implements DiscountStrategy {
     @Override
     public String getName() {
         return "Remise de 5€";
@@ -6,12 +6,12 @@ public class FidelityDiscount implements DiscountStrategy{
 
     @Override
     public double getDiscount(Cart cart, Fidelity fidelity) {
-        //discount for fidelity points
-            double discount=(fidelity.getPoints()/100)*5.0;
-            if(discount>cart.subTotal()){
-                discount=cart.subTotal();
-            }
-            return discount;
+        if(fidelity==null||fidelity.getPoints()<100){
+            return 0.0;
         }
 
+        int discountFidelity= fidelity.getPoints()/100;
+        int acceptedFidelity= (int) (cart.subTotal()/5.0);
+        return Math.min(discountFidelity,acceptedFidelity);
+        }
     }

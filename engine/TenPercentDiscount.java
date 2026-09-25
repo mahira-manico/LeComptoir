@@ -1,4 +1,4 @@
-public class TenPercentDiscount implements DiscountStrategy{
+public class TenPercentDiscount implements DiscountStrategy {
 
     @Override
     public String getName() {
