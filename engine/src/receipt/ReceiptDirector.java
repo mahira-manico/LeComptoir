@@ -1,5 +1,13 @@
+package src.receipt;
+import src.Checkout;
+import src.discount.DiscountStrategy;
+import src.discount.FidelityDiscount;
+import src.model.Cart;
+import src.model.CartLine;
+import src.model.Fidelity;
 
-//Director of Receipt, Build receipt steps by steps using the builder class
+
+//Director of Receipt, Build src.discount.receipt steps by steps using the builder class
 public class ReceiptDirector {
 
     private final ReceiptBuilder builder; //get the builder
@@ -8,7 +16,7 @@ public class ReceiptDirector {
         this.builder = builder;
     }
 
-    //method that build the full receipt using methods calls
+    //method that build the full src.discount.receipt using methods calls
     public void makeReceipt(Cart cart, Fidelity fidelity, Checkout checkout){
         builder.reset();
         builder.buildHeader();
@@ -33,7 +41,7 @@ public class ReceiptDirector {
         if(fidelity!=null){
             int pointsBefore= fidelity.getPoints();
             int usedPoints=0;
-            if(discountStrategy instanceof FidelityDiscount&&amount>0.0){
+            if(discountStrategy instanceof FidelityDiscount &&amount>0.0){
                 usedPoints= (int) ((amount/5.0)*100);
             }
             int wonPoints= (int) totalTTC;

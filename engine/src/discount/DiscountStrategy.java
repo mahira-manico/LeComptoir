@@ -1,3 +1,7 @@
+package src.discount;
+import src.model.Cart;
+import src.model.Fidelity;
+
 //Interface for discounts, use strategy pattern
 
 public interface DiscountStrategy {

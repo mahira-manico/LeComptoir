@@ -1,12 +1,17 @@
-import java.util.ArrayList;
-import java.util.List;
+package src;
+
+import src.model.*;
+import src.receipt.ReceiptBuilder;
+import src.receipt.ReceiptDirector;
+import src.receipt.TextReceiptBuilder;
+
 
 public class Main {
     public static void main(String[] args) {
 
         //Client test script
         Cart cart=new Cart();
-        cart.addLine(new CartLine(new Product("DRINK-SODA1","COCA",3.50,Category.DRINKS),3));
+        cart.addLine(new CartLine(new Product("DRINK-SODA1","COCA",3.50, Category.DRINKS),3));
         cart.addLine(new CartLine(new Product("DRINK-SODA2","PEPSI",2.50,Category.DRINKS),3));
         cart.addLine(new CartLine(new Product("FOOD-FASTFOOD","PANINI",2.30,Category.FOOD),4));
 
@@ -20,7 +25,7 @@ public class Main {
         System.out.println(receipt);
         checkout.updateCard(cart,fidelity);
 
-        //check if fidelity points get add and if free drink discount works
+        //check if fidelity points get add and if free drink src.discount works
         Cart cart2 = new Cart();
         cart2.addLine(new CartLine(new Product("DRINK-SODA3", "FANTA", 1.50,Category.DRINKS), 4));
         receiptDirector.makeReceipt(cart2, fidelity, checkout);

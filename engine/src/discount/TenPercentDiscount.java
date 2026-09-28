@@ -1,4 +1,8 @@
-//under class of DiscountStrategy interface
+package src.discount;
+import src.model.Cart;
+import src.model.Fidelity;
+
+//under class of src.discount.DiscountStrategy interface
 public class TenPercentDiscount implements DiscountStrategy {
 
     @Override

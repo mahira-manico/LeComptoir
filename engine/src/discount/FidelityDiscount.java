@@ -1,7 +1,11 @@
-//under class of interface DiscountStrategy
+package src.discount;
+import src.model.Cart;
+import src.model.Fidelity;
+
+//under class of interface src.discount.DiscountStrategy
 public class FidelityDiscount implements DiscountStrategy {
 
-    //use methods of interface DiscountStrategy
+    //use methods of interface src.discount.DiscountStrategy
     @Override
     public String getName() {
         return "Remise de 5€(10€ max)";
