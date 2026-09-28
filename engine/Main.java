@@ -42,6 +42,43 @@ public class Main {
         System.out.println(receiptBuilder.getResult());
         checkout.updateCard(cart4,fidelity);
 
+       // Check if 20% FOOD discount works
+        Fidelity fidelityTest = new Fidelity(0);
+
+        Cart cart5 = new Cart();
+        cart5.addLine(new CartLine(
+            new Product("PASTA2", "PANZANI", 4.50, Category.FOOD),
+            5
+        ));
+
+        receiptDirector.makeReceipt(cart5, fidelityTest, checkout);
+        System.out.println(receiptBuilder.getResult());
+        checkout.updateCard(cart5, fidelityTest);
+
+
+
+        // Check quantity limit for 20% FOOD discount
+        Fidelity fidelityTest2 = new Fidelity(0);
+
+        // FOOD x4 -> should NOT get 20% discount
+        Cart cart6 = new Cart();
+        cart6.addLine(new CartLine(
+            new Product("PASTA3", "PANZANI", 4.50, Category.FOOD),
+            4
+        ));
+
+        receiptDirector.makeReceipt(cart6, fidelityTest2, checkout);
+        System.out.println(receiptBuilder.getResult());
+
+        // FOOD x5 -> should get 20% discount
+        Cart cart7 = new Cart();
+        cart7.addLine(new CartLine(
+            new Product("PASTA4", "PANZANI", 4.50, Category.FOOD),
+            5
+        ));
+
+        receiptDirector.makeReceipt(cart7, fidelityTest2, checkout);
+        System.out.println(receiptBuilder.getResult());
 
 
     }
