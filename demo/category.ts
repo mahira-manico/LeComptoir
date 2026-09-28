@@ -1,3 +1,4 @@
+//category const to get enum category of products
 const CATEGORY = {
     DRINKS: "DRINKS",
     FOOD: "FOOD",

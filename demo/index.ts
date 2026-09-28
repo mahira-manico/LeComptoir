@@ -2,7 +2,7 @@ import type { Product } from "./product";
 import type { CartLine } from "./cartLine";
 import type { Cart } from "./cart";
 
-
+//create cart with product, the line and a full cart
 const coca: Product = {
     reference: "P001",
     label: "Coca",
@@ -26,49 +26,26 @@ const pizzaLine: CartLine = {
 };
 
 const cart: Cart = {
-    lines: [cocaLine]
-};
-const cart2: Cart = {
-    lines: [pizzaLine]
+    fidelityPoints:0,
+    lines:[cocaLine]
 };
 
-const cart3: Cart = {
-    lines: [cocaLine, pizzaLine]
-};
 
-function calculateTotal(cart: Cart): number {
-    let total = 0;
+// @ts-ignore, fetch method to send a json body cart to backend java
+export async function sendCartToBackend(fidelityPoints:number): Promise<void> {
+    const response = await fetch(`http://localhost:8080/checkout?points=${cart.fidelityPoints}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(cart),
+    });
 
-    for (const line of cart.lines) {
-        total += line.product.price * line.quantity;
+    if (!response.ok) {
+        console.error("Error, cannot send cart");
+    } else {
+        console.log("Cart sent to backend!");
     }
-
-    return total;
 }
 
-console.log(calculateTotal(cart));
-
-
-function displayReceipt(cart: Cart): void {
-    console.log(" _________ RECEIPT ___________ ");
-    for ( const line of cart.lines){
-        const lineTotal = line.product.price * line.quantity
-
-        console.log(
-           line.product.label +
-           " x" +
-           line.quantity +
-           " : " +
-           lineTotal +
-           " €"
-
-        );
-    }
-
-
-    console.log("TOTAL :" + calculateTotal(cart) +" €");
-    console.log("-----------------------");
-}
-displayReceipt(cart);
-displayReceipt(cart2);
-displayReceipt(cart3);
+sendCartToBackend(0).then(r => Promise<string>);
