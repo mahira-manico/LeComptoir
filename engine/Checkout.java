@@ -9,7 +9,8 @@ public class Checkout {
         this.strategies = List.of(
                 new TenPercentDiscount(), //Instanciation of each under class of interfaces DiscountStrategy
                 new FreeDrinksDiscount(),
-                new FidelityDiscount()
+                new FidelityDiscount(),
+                new FoodQuantityDiscount()
         );
     }
 
