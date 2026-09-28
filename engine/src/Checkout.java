@@ -1,9 +1,6 @@
 package src;
 
-import src.discount.DiscountStrategy;
-import src.discount.FidelityDiscount;
-import src.discount.FreeDrinksDiscount;
-import src.discount.TenPercentDiscount;
+import src.discount.*;
 import src.model.Cart;
 import src.model.CartLine;
 import src.model.Fidelity;

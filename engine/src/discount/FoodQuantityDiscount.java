@@ -1,8 +1,14 @@
+package src.discount;
+import src.model.Cart;
+import src.model.CartLine;
+import src.model.Category;
+import src.model.Fidelity;
+
 public class FoodQuantityDiscount implements DiscountStrategy {
 
     @Override
     public String getName() {
-        return "Remise 20% FOOD";
+        return "Remise 20%";
     }
 
     @Override
