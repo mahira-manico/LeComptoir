@@ -1,12 +1,18 @@
+package src.receipt;
 
-//Interface to handle receipt display, use Builder pattern
+import src.discount.DiscountStrategy;
+import src.model.Cart;
+import src.model.CartLine;
+import src.model.Fidelity;
+
+//Interface to handle src.discount.receipt display, use Builder pattern
 public interface ReceiptBuilder {
 
     //methods initializing
     void reset();
     void buildHeader();
     void buildProductLine(CartLine line);
-    void buildDiscountLine(DiscountStrategy discountStrategy, double amount,Cart cart, Fidelity fidelity);
+    void buildDiscountLine(DiscountStrategy discountStrategy, double amount, Cart cart, Fidelity fidelity);
     void buildTotalHT(double totalHT);
     void buildVAT(double vat);
     void buildTotalTTC(double totalTTC);

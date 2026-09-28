@@ -1,8 +1,15 @@
+package src.discount;
+
+import src.model.Cart;
+import src.model.CartLine;
+import src.model.Category;
+import src.model.Fidelity;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-//under class of interface DiscountStrategy
+//under class of interface src.discount.DiscountStrategy
 public class FreeDrinksDiscount implements DiscountStrategy {
     @Override
     public String getName() {

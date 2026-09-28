@@ -1,3 +1,5 @@
+package src.model;
+
 //enum for categories
 public enum Category {
     DRINKS(0.20), //Value of vat by category

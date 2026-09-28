@@ -1,19 +1,28 @@
+package src;
+
+import src.discount.DiscountStrategy;
+import src.discount.FidelityDiscount;
+import src.discount.FreeDrinksDiscount;
+import src.discount.TenPercentDiscount;
+import src.model.Cart;
+import src.model.CartLine;
+import src.model.Fidelity;
 import java.util.List;
 
 //Class for checkout, handle all calculs
 public class Checkout {
 
-    private final List<DiscountStrategy> strategies; //take the list of discount strategies
+    private final List<DiscountStrategy> strategies; //take the list of src.discount strategies
 
     public Checkout() {
         this.strategies = List.of(
-                new TenPercentDiscount(), //Instanciation of each under class of interfaces DiscountStrategy
+                new TenPercentDiscount(), //Instanciation of each under class of interfaces src.discount.DiscountStrategy
                 new FreeDrinksDiscount(),
                 new FidelityDiscount()
         );
     }
 
-    //method to decide which discount is the best
+    //method to decide which src.discount is the best
     public DiscountStrategy getBestDiscount(Cart cart, Fidelity fidelity){
         DiscountStrategy bestDiscount=null;
         double max=0.0;
@@ -60,7 +69,7 @@ public class Checkout {
 
     public void updateCard(Cart cart,Fidelity fidelity){ //update fidelity class after each checkout
       DiscountStrategy bestDiscount=getBestDiscount(cart,fidelity);
-      double discountAmount=(bestDiscount!=null)?bestDiscount.getDiscount(cart,fidelity) : 0.0; //check if there is a discount
+      double discountAmount=(bestDiscount!=null)?bestDiscount.getDiscount(cart,fidelity) : 0.0; //check if there is a src.discount
       double totalTTC=totalTTC(cart,fidelity);
 
       if(fidelity!=null){

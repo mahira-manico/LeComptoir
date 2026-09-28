@@ -1,5 +1,12 @@
-//Builder of interface ReceiptBuilder
-public class TextReceiptBuilder implements ReceiptBuilder{
+package src.receipt;
+
+import src.discount.DiscountStrategy;
+import src.model.Cart;
+import src.model.CartLine;
+import src.model.Fidelity;
+
+//Builder of interface src.discount.receipt.ReceiptBuilder
+public class TextReceiptBuilder implements ReceiptBuilder {
 
     private StringBuilder sb; //get java native class StringBuilder
 
@@ -12,7 +19,7 @@ public class TextReceiptBuilder implements ReceiptBuilder{
 
     }
 
-    //build header of receipt
+    //build header of src.discount.receipt
     @Override
     public void buildHeader() {
         sb.append("\n==========TICKET==========\n");
@@ -29,7 +36,7 @@ public class TextReceiptBuilder implements ReceiptBuilder{
                 line.total()));
     }
 
-    //build the discount text calling the display method of DiscountStrategy interface
+    //build the src.discount text calling the display method of src.discount.DiscountStrategy interface
     @Override
     public void buildDiscountLine(DiscountStrategy discountStrategy, double amount, Cart cart, Fidelity fidelity) {
         sb.append("==========REMISE==========\n");

@@ -1,5 +1,6 @@
-//class fidelity, represent object fidelity card
+package src.model;
 
+//class fidelity, represent object fidelity card
 public class Fidelity {
     private int points; //cards points
 
@@ -17,6 +18,9 @@ public class Fidelity {
     }
 
     public void usePoints(int usedPoints){
+        if(usedPoints<0){
+            
+        }
         this.points-=usedPoints;
     }
 }
