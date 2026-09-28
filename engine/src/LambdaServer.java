@@ -1,20 +1,20 @@
 package src;
-
-import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
+import src.model.*;
+import src.receipt.ReceiptBuilder;
+import src.receipt.ReceiptDirector;
+import src.receipt.TextReceiptBuilder;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 
-//Method to declare endpoint and
+//Method to declare endpoint and get a receipt from typescript
 public class LambdaServer {
     public static void main(String[] args) throws IOException{
 
-        HttpServer server=HttpServer.create(new InetSocketAddress(8080),0);
+        HttpServer server=HttpServer.create(new InetSocketAddress(8080),0); //create port 8080
 
-        server.createContext("/checkout", exchange -> {
+        server.createContext("/checkout", exchange -> { //give the url path
 
             //CORS configuration to avoid issues
             exchange.getResponseHeaders().set("Access-Control-Allow-Origin", "*");
@@ -26,28 +26,45 @@ public class LambdaServer {
                 return;
             }
 
-            //get JSON body send by TypeScript
-            InputStream is = exchange.getRequestBody();
-            String body = new String(is.readAllBytes(), StandardCharsets.UTF_8);
-            System.out.println("JSON received from TypeScript : " + body);
+                    if ("POST".equalsIgnoreCase(exchange.getRequestMethod())) {
 
-            //give an answer to TypeScript to confirm the parcel
-            sendResponse(exchange, "JSON received from backend!");
-        });
+                        String query = exchange.getRequestURI().getQuery(); //take points from url
+                        int points = 0;
+                        if (query != null && query.contains("points=")) {
+                            points = Integer.parseInt(query.replace("points=", "").trim());
+                        }
+
+                        Cart cart = new Cart(); //instanciation
+                        cart.addLine(new CartLine(new Product("POO1", "Coca",2.50, Category.DRINKS), 3));
+                        cart.addLine(new CartLine(new Product("P002", "Pizza",8.00, Category.FOOD), 1));
+
+                        Fidelity fidelity = new Fidelity(points);
+
+                        Checkout checkout = new Checkout();
+                        ReceiptBuilder builder = new TextReceiptBuilder();
+                        ReceiptDirector director = new ReceiptDirector(builder);
+
+                        director.makeReceipt(cart, fidelity, checkout);
+
+                        System.out.println("\n--- TICKET REÇU DEPUIS TYPESCRIPT ---"); //display receipt
+                        System.out.println(builder.getResult());
+                        System.out.println("-------------------------------------\n");
+
+                        checkout.updateCard(cart, fidelity);
+
+                        byte[] ok = "OK".getBytes(StandardCharsets.UTF_8);
+                        exchange.sendResponseHeaders(200, ok.length);
+                        exchange.getResponseBody().write(ok);
+                        exchange.getResponseBody().close();
+                    }
+        }
+        );
 
         server.setExecutor(null);
         server.start();
         System.out.println("Server listening on port : 'http://localhost:8080/checkout'");
-    }
 
-    //send response method from HttpServer
-    private static void sendResponse(HttpExchange exchange, String response) throws IOException {
-        byte[] bytes = response.getBytes("UTF-8");
-        exchange.sendResponseHeaders(200, bytes.length);
-        try (OutputStream os = exchange.getResponseBody()) {
-            os.write(bytes);
-        }
-    }
+}
 }
 
 
