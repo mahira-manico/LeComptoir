@@ -1,2 +1,9 @@
 node_modules/
 out/
+
+*.class
+
+*.js
+*.js.map
+*.d.ts
+*.d.ts.map
